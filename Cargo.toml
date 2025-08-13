@@ -1,0 +1,12 @@
+[package]
+name = "shimr"
+version = "0.0.1"
+edition = "2024"
+authors = ["Nicholas Lange <nicholas@tensegrity.dev>"]
+description = "Terminal transition effects using cellular automata"
+license = "MIT"
+repository = "https://github.com/tensegrity-ai/shimr"
+keywords = ["terminal", "tui", "animation", "transitions", "effects"]
+categories = ["command-line-interface", "graphics"]
+
+[dependencies]
