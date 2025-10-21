@@ -2,7 +2,8 @@ use crate::core::Automata;
 use crate::rules::{Rule, Conway};
 use crate::glyphs::GlyphSet;
 use crate::color::ColorMap;
-use super::{Transition, text::text_to_grid, morph::merge_grids};
+use crate::fonts::FontRenderer;
+use super::{Transition, text::{text_to_grid, default_font}, morph::merge_grids};
 
 /// Builder for text morphing animations
 ///
@@ -30,6 +31,7 @@ pub struct MorphBuilder {
     glyph_set: GlyphSet,
     color_map: Option<Box<dyn ColorMap>>,
     decay_rate: u8,
+    font: Box<dyn FontRenderer>,
 }
 
 impl MorphBuilder {
@@ -47,6 +49,7 @@ impl MorphBuilder {
             glyph_set: GlyphSet::classic(),
             color_map: None,
             decay_rate: 32,
+            font: Box::new(default_font()),
         }
     }
 
@@ -83,11 +86,17 @@ impl MorphBuilder {
         self
     }
 
+    /// Set the font renderer
+    pub fn font(mut self, font: Box<dyn FontRenderer>) -> Self {
+        self.font = font;
+        self
+    }
+
     /// Build the transition
     pub fn build(self) -> Transition {
         // Convert text to grids
-        let start_grid = text_to_grid(&self.start);
-        let end_grid = text_to_grid(&self.end);
+        let start_grid = text_to_grid(&self.start, &*self.font);
+        let end_grid = text_to_grid(&self.end, &*self.font);
 
         // Merge grids for initial state
         let grid = merge_grids(&start_grid, &end_grid);

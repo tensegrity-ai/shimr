@@ -24,6 +24,7 @@ pub mod rules;
 pub mod glyphs;
 pub mod transition;
 pub mod color;
+pub mod fonts;
 
 // Re-export the morph function for convenience
 pub use transition::morph;
@@ -35,4 +36,5 @@ pub mod prelude {
     pub use crate::glyphs::GlyphSet;
     pub use crate::transition::{Frame, MorphBuilder, morph};
     pub use crate::color::{Color, ColorMap, TokyoNight, Matrix, Fire, Ocean, Cyberpunk};
+    pub use crate::fonts::{FontRenderer, FigletFont, CharBitmap};
 }
