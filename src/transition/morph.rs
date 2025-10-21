@@ -1,5 +1,6 @@
 use crate::core::{Automata, Grid, Cell};
 use crate::glyphs::GlyphSet;
+use crate::color::ColorMap;
 use super::Frame;
 
 /// Transition animation between two states
@@ -9,6 +10,7 @@ use super::Frame;
 pub struct Transition {
     automata: Automata,
     glyph_set: GlyphSet,
+    color_map: Option<Box<dyn ColorMap>>,
     current_gen: usize,
     max_gen: usize,
     frame_buffer: Frame,
@@ -32,10 +34,42 @@ impl Transition {
         Transition {
             automata,
             glyph_set,
+            color_map: None,
             current_gen: 0,
             max_gen: generations,
             frame_buffer,
         }
+    }
+
+    /// Set color map for colored output
+    pub fn with_color_map(mut self, color_map: Box<dyn ColorMap>) -> Self {
+        self.color_map = Some(color_map);
+        self
+    }
+
+    /// Render current grid state to frame buffer with colors
+    pub fn render_colored(&self) -> String {
+        let grid = self.automata.grid();
+        let mut output = String::new();
+
+        for y in 0..grid.height() {
+            for x in 0..grid.width() {
+                let cell = grid.get(x, y);
+                let glyph = self.glyph_set.map(cell.decay());
+
+                if let Some(ref color_map) = self.color_map {
+                    let color = color_map.map(cell.decay());
+                    output.push_str(&color.colorize(&glyph.to_string()));
+                } else {
+                    output.push(glyph);
+                }
+            }
+            if y < grid.height() - 1 {
+                output.push('\n');
+            }
+        }
+
+        output
     }
 
     /// Render current grid state to frame buffer

@@ -1,6 +1,7 @@
 use crate::core::Automata;
 use crate::rules::{Rule, Conway};
 use crate::glyphs::GlyphSet;
+use crate::color::ColorMap;
 use super::{Transition, text::text_to_grid, morph::merge_grids};
 
 /// Builder for text morphing animations
@@ -27,6 +28,7 @@ pub struct MorphBuilder {
     generations: usize,
     rule: Box<dyn Rule>,
     glyph_set: GlyphSet,
+    color_map: Option<Box<dyn ColorMap>>,
     decay_rate: u8,
 }
 
@@ -43,6 +45,7 @@ impl MorphBuilder {
             generations: 30,
             rule: Box::new(Conway),
             glyph_set: GlyphSet::classic(),
+            color_map: None,
             decay_rate: 32,
         }
     }
@@ -62,6 +65,12 @@ impl MorphBuilder {
     /// Set the glyph set for rendering
     pub fn glyph_set(mut self, set: GlyphSet) -> Self {
         self.glyph_set = set;
+        self
+    }
+
+    /// Set color map for colored output
+    pub fn color_map(mut self, color_map: impl ColorMap + 'static) -> Self {
+        self.color_map = Some(Box::new(color_map));
         self
     }
 
@@ -88,7 +97,14 @@ impl MorphBuilder {
             .with_decay_rate(self.decay_rate);
 
         // Build transition
-        Transition::new(automata, self.glyph_set, self.generations)
+        let mut transition = Transition::new(automata, self.glyph_set, self.generations);
+
+        // Add color map if provided
+        if let Some(color_map) = self.color_map {
+            transition = transition.with_color_map(color_map);
+        }
+
+        transition
     }
 }
 

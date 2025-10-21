@@ -23,6 +23,7 @@ pub mod core;
 pub mod rules;
 pub mod glyphs;
 pub mod transition;
+pub mod color;
 
 // Re-export the morph function for convenience
 pub use transition::morph;
@@ -30,7 +31,8 @@ pub use transition::morph;
 /// Prelude for convenient imports
 pub mod prelude {
     pub use crate::core::{Cell, Grid, Automata};
-    pub use crate::rules::{Rule, Conway};
+    pub use crate::rules::{Rule, Conway, HighLife, Seeds, DayAndNight};
     pub use crate::glyphs::GlyphSet;
     pub use crate::transition::{Frame, MorphBuilder, morph};
+    pub use crate::color::{Color, ColorMap, TokyoNight, Matrix, Fire, Ocean, Cyberpunk};
 }
