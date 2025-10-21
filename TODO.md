@@ -90,3 +90,25 @@ See detailed discussions in `PLANS/` directory.
 - Prioritize zero-allocation render loop for performance
 - Keep API simple and composable
 - Framework-agnostic core, integrations as features
+
+---
+
+## Testing Approach
+
+**Philosophy:** Minimal tests that prove functionality, not exhaustive coverage.
+
+**Core Tests (4 total):**
+1. **Visual integration test**: `test_morph_test_to_complete()` - Full pipeline test with snapshot
+   - Morph "TEST" → "COMPLETE"
+   - Verify frame count and progression
+   - Use `insta` for visual regression testing
+2. **CA correctness**: `test_conway_stable_block()` - Verify Conway's rules work
+3. **Glyph mapping**: `test_glyph_set_boundaries()` - Verify decay → char mapping
+4. **Performance**: `test_performance_target()` - Ensure < 16ms per frame (60fps)
+
+**Manual Testing:**
+- Examples (`cargo run --example text_morph`) for visual verification
+- Interactive demos for user testing
+
+**Dependencies:**
+- `insta` - Snapshot testing for visual regression
